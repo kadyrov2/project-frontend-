@@ -49,9 +49,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Публикация Docker-образа
                     docker.withRegistry('https://cr.yandex') {
-                        docker.image("${DOCKER_IMAGE}").push()
+                        docker.image("${FRONTEND_IMAGE}").push()
                     }
                 }
             }
