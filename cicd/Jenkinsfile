@@ -39,7 +39,7 @@ pipeline {
                     // Авторизация в Yandex Cloud Registry
                     withCredentials([file(credentialsId: 'yandex-cloud-registry-key', variable: 'YC_KEY')]) {
                         sh '''
-                        cat $YC_KEY | sudo -S docker login --username json_key --password-stdin cr.yandex
+                        echo $YC_KEY | sudo -S docker login --username json_key --password-stdin cr.yandex
                         '''
                     }
                 }
