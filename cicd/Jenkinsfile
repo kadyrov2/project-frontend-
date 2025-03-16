@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        FRONTEND_DIR = 'frontend'  // Директория с фронтендом
+        FRONTEND_DIR = 'frontend'  
         BACKEND_DIR = 'backend/Service'    // Директория с бэкендом
         BUILD_CONFIGURATION = 'Release'  // Конфигурация сборки
         DEPLOY_DIR = '/path/to/deploy'   // Директория для деплоя
