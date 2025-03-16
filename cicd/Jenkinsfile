@@ -29,7 +29,7 @@ pipeline {
         //             sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
         //         }
         //     }
-        }
+        // }
 
         // stage('Build Backend') {
         //     steps {
