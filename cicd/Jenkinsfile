@@ -42,7 +42,7 @@ pipeline {
                             echo "Contents of key file:"
                             cat $YC_KEY
                         echo "Using key file: $YC_KEY"
-                        echo $YC_KEY | -S  docker login --username json_key --password-stdin cr.yandex
+                          docker login --username json_key --password-stdin cr.yandex
                         '''
                     }
                 }
