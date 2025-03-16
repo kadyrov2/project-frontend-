@@ -42,16 +42,16 @@ pipeline {
         //     }
         // }
 
-         stage('Login to Docker Registry') {
-            steps {
-                script {
-                    sh """
-                        echo ${DOCKER_PASSWORD} |sudo -S docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
-                    """
-                }
-            }
+        //  stage('Login to Docker Registry') {
+        //     steps {
+        //         script {
+        //             sh """
+        //                 echo ${DOCKER_PASSWORD} |sudo -S docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
+        //             """
+        //         }
+        //     }
      
-        }
+        // }
 
         stage('Push Images') {
             steps {
