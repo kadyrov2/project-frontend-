@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        FRONTEND_DIR = 'frontend'  // Директория с фронтендом
-        BACKEND_DIR = 'backend/Service'    // Директория с бэкендом
-        BUILD_CONFIGURATION = 'Release'  // Конфигурация сборки
-        DEPLOY_DIR = '/path/to/deploy'   // Директория для деплоя
+        FRONTEND_DIR = 'frontend'  
+        BACKEND_DIR = 'backend/Service'   
+        BUILD_CONFIGURATION = 'Release'  
+        DEPLOY_DIR = '/path/to/deploy'   
 
         GITHUB_USERNAME = 'kadyrov2'
-        GITHUB_TOKEN = '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'  // Используйте Jenkins Credentials для хранения токена
+        GITHUB_TOKEN = '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'  
         FRONTEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/frontend:1.0.0"
         BACKEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/backend:1.0.0"
 
@@ -20,7 +20,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Получение кода из репозитория
                 checkout scm
             }
         }
@@ -28,7 +27,6 @@ pipeline {
          stage('Build Frontend') {
             steps {
                 dir(env.FRONTEND_DIR) {
-                    // Сборка фронтенда на C# (например, Blazor)
                     sh 'dotnet restore'
                     sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
                 }
