@@ -50,7 +50,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://cr.yandex') {
-                        docker.image("${FRONTEND_IMAGE}").push()
+                     sudo  docker.image("${FRONTEND_IMAGE}").push()
                     }
                 }
             }
