@@ -21,15 +21,15 @@ pipeline {
             }
         }
 
-        //  stage('Build Frontend') {
-        //     steps {
-        //         dir(env.FRONTEND_DIR) {
-        //             // Сборка фронтенда на C# (например, Blazor)
-        //             sh 'dotnet restore'
-        //             sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
-        //         }
-        //     }
-        // }
+         stage('Build Frontend') {
+            steps {
+                dir(env.FRONTEND_DIR) {
+                    // Сборка фронтенда на C# (например, Blazor)
+                    sh 'dotnet restore'
+                    sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+                }
+            }
+        }
 
         // stage('Build Backend') {
         //     steps {
