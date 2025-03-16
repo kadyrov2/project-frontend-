@@ -14,7 +14,7 @@ pipeline {
 
         DOCKER_REGISTRY = "dockerhub.timeweb.cloud"
         DOCKER_USERNAME = "timkad"
-        DOCKER_PASSWORD = 'Tim13Tim13Tim13!'
+        DOCKER_PASSWORD = 'Komarova1515!'
     }
 
     stages {
