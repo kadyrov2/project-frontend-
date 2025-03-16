@@ -43,7 +43,7 @@ pipeline {
          stage('Login to GHCR') {
             steps {
                 script {
-                    sh "echo ${env.GITHUB_TOKEN} | docker login ghcr.io -u ${env.GITHUB_USERNAME} --password-stdin"
+                    sh "echo ${GITHUB_TOKEN} | docker login ghcr.io -u ${GITHUB_USERNAME} --password-stdin"
                 }
             }
         }
