@@ -9,8 +9,8 @@ pipeline {
 
         kadyrov2 = 'kadyrov2'
         GITHUB_TOKEN = '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'  // Используйте Jenkins Credentials для хранения токена
-        FRONTEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/frontend:1.0.0"
-        BACKEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/backend:1.0.0"
+        echo FRONTEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/frontend:1.0.0"
+       echo BACKEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/backend:1.0.0"
     }
 
     stages {
