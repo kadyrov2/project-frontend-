@@ -7,10 +7,10 @@ pipeline {
         BUILD_CONFIGURATION = 'Release'  
         DEPLOY_DIR = '/path/to/deploy'   
 
-        GITHUB_USERNAME = 'kadyrov2'
+        GITHUB_USERNAME = 'timlad'
         GITHUB_TOKEN = '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'  
-        FRONTEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/frontend:1.0.0"
-        BACKEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/backend:1.0.0"
+        FRONTEND_IMAGE = "cr.yandex/${env.GITHUB_USERNAME}/frontend:1.0.0"
+        BACKEND_IMAGE = "cr.yandex/${env.GITHUB_USERNAME}/backend:1.0.0"
 
         DOCKER_REGISTRY = "dockerhub.timeweb.cloud"
         DOCKER_USERNAME = "timkad"
@@ -29,6 +29,30 @@ pipeline {
                 dir(env.FRONTEND_DIR) {
                     sh 'dotnet restore'
                     sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+                }
+            }
+        }
+
+         stage('Login to Yandex Cloud Registry') {
+            steps {
+                script {
+                    // Авторизация в Yandex Cloud Registry
+                    withCredentials([file(credentialsId: 'y0__xCC7vykBhjB3RMg852KmxJg7wFn7smq84JZ46GWZN-qbUbBMA', variable: 'YC_KEY')]) {
+                        sh '''
+                        cat $YC_KEY | docker login --username json_key --password-stdin cr.yandex
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Публикация Docker-образа
+                    docker.withRegistry('https://cr.yandex') {
+                        docker.image("${DOCKER_IMAGE}").push()
+                    }
                 }
             }
         }
