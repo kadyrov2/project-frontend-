@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "hz4f+EcDiBw=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\tim\\Downloads\\Telegram Desktop\\repos\\repos\\Client\\Client.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\tim\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.21.0\\microsoft.visualstudio.azure.containers.tools.targets.1.21.0.nupkg.sha512",
+    "C:\\Users\\tim\\.nuget\\packages\\system.net.http.json\\9.0.3\\system.net.http.json.9.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

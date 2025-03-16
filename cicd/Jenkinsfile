@@ -1,0 +1,97 @@
+pipeline {
+    agent any
+
+    environment {
+        FRONTEND_DIR = 'frontend'  // Директория с фронтендом
+        BACKEND_DIR = 'backend/Service'    // Директория с бэкендом
+        BUILD_CONFIGURATION = 'Release'  // Конфигурация сборки
+        DEPLOY_DIR = '/path/to/deploy'   // Директория для деплоя
+
+        kadyrov2 = 'kadyrov2'
+        GITHUB_TOKEN = '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'  // Используйте Jenkins Credentials для хранения токена
+        FRONTEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/frontend:1.0.0"
+        BACKEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/backend:1.0.0"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Получение кода из репозитория
+                checkout scm
+            }
+        }
+
+        //  stage('Build Frontend') {
+        //     steps {
+        //         dir(env.FRONTEND_DIR) {
+        //             // Сборка фронтенда на C# (например, Blazor)
+        //             sh 'dotnet restore'
+        //             sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+        //         }
+        //     }
+        }
+
+        // stage('Build Backend') {
+        //     steps {
+        //         dir(env.BACKEND_DIR) {
+        //             sh 'dotnet restore'
+        //             sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+        //         }
+        //     }
+        // }
+
+         stage('Login to GHCR') {
+            steps {
+                script {
+                    sh "echo ${env.GITHUB_TOKEN} | docker login ghcr.io -u ${env.GITHUB_USERNAME} --password-stdin"
+                }
+            }
+        }
+
+        stage('Push Images') {
+            steps {
+                script {
+                    sh "docker push ${env.FRONTEND_IMAGE}"
+                    // sh "docker push ${env.BACKEND_IMAGE}"
+                }
+            }
+        }
+
+
+        // stage('Run Tests') {
+        //     steps {
+        //         dir(env.BACKEND_DIR) {
+        //             // Запуск unit-тестов для бэкенда
+        //             // bat 'dotnet test'
+        //         }
+        //         dir(env.FRONTEND_DIR) {
+        //             // Запуск unit-тестов для фронтенда (если есть)
+        //             // bat 'dotnet test'
+        //         }
+        //     }
+        // }
+
+        stage('Deploy') {
+            steps {
+                // Копирование собранных файлов в директорию деплоя
+                dir(env.FRONTEND_DIR) {
+                    // bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/frontend"
+                }
+                dir(env.BACKEND_DIR) {
+                    // bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/backend"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            // Действия после успешного завершения пайплайна
+            echo 'Build and deploy completed successfully!'
+        }
+        failure {
+            // Действия в случае ошибки
+            echo 'Build or deploy failed!'
+        }
+    }
+}

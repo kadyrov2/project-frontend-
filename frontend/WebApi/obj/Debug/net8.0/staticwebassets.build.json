@@ -1,0 +1,125 @@
+{
+  "Version": 1,
+  "Hash": "7HEZDLOlWH4BCnYsUu/kv1vL4uZb3+e0XCX0oJkXgrc=",
+  "Source": "WebApi",
+  "BasePath": "_content/WebApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "WebApi\\wwwroot",
+      "Source": "WebApi",
+      "ContentRoot": "C:\\Users\\tim\\source\\repos\\WebApi\\WebApi\\wwwroot\\",
+      "BasePath": "_content/WebApi",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\tim\\source\\repos\\WebApi\\WebApi\\wwwroot\\index.html",
+      "SourceId": "WebApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tim\\source\\repos\\WebApi\\WebApi\\wwwroot\\",
+      "BasePath": "_content/WebApi",
+      "RelativePath": "index#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "e9dl0eu7cb",
+      "Integrity": "Ys5zM+y/kFdod0dsGvCSZFgMNwAFndftiduu/3Ilwms=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "index.e9dl0eu7cb.html",
+      "AssetFile": "C:\\Users\\tim\\source\\repos\\WebApi\\WebApi\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7277"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ys5zM+y/kFdod0dsGvCSZFgMNwAFndftiduu/3Ilwms=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 16 Mar 2025 09:26:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "e9dl0eu7cb"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ys5zM+y/kFdod0dsGvCSZFgMNwAFndftiduu/3Ilwms="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "C:\\Users\\tim\\source\\repos\\WebApi\\WebApi\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7277"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ys5zM+y/kFdod0dsGvCSZFgMNwAFndftiduu/3Ilwms=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 16 Mar 2025 09:26:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ys5zM+y/kFdod0dsGvCSZFgMNwAFndftiduu/3Ilwms="
+        }
+      ]
+    }
+  ]
+}

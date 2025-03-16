@@ -1,0 +1,63 @@
+﻿@model List<Client.Models.User>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Users</h1>
+    <p>
+        <a asp-action="Create" class="btn btn-success">Create New User</a>
+    </p>
+    <table class="table" id="usersTable">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        // Функция для обновления таблицы
+        function updateTable() {
+            fetch('/api/users') // Запрос к API
+                .then(response => response.json()) // Преобразование ответа в JSON
+                .then(data => {
+                    const tableBody = document.querySelector('#usersTable tbody');
+                    tableBody.innerHTML = ''; // Очистка таблицы
+
+                    // Добавление новых данных
+                    data.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${user.id}</td>
+                            <td>${user.name}</td>
+                            <td>${user.email}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Ошибка при загрузке данных:', error));
+        }
+
+        // Обновление таблицы каждые 5 секунд
+        setInterval(updateTable, 5000);
+
+        // Первоначальная загрузка данных
+        updateTable();
+    </script>
+}

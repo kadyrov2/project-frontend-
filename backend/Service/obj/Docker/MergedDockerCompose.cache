@@ -1,0 +1,72 @@
+name: dockercompose7017621782792401935
+services:
+  db:
+    container_name: db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    image: postgres:12
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 5432
+        published: "5432"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: pgdata
+        target: /var/lib/postgresql/data
+        volume: {}
+  redis:
+    container_name: redisUserAPI
+    image: redis:alpine
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 6379
+        published: "6379"
+        protocol: tcp
+  service:
+    build:
+      context: C:\Users\tim\Downloads\Telegram Desktop\repos\repos\Service
+      dockerfile: Service/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8081"
+      ASPNETCORE_HTTPS_PORTS: "8080"
+    image: service
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 8080
+        published: "5000"
+        protocol: tcp
+      - mode: ingress
+        target: 8080
+        protocol: tcp
+      - mode: ingress
+        target: 8081
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: C:\Users\tim\AppData\Roaming/Microsoft/UserSecrets
+        target: /home/app/.microsoft/usersecrets
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\tim\AppData\Roaming/ASP.NET/Https
+        target: /home/app/.aspnet/https
+        read_only: true
+        bind:
+          create_host_path: true
+networks:
+  default:
+    name: dockercompose7017621782792401935_default
+volumes:
+  pgdata:
+    name: dockercompose7017621782792401935_pgdata
