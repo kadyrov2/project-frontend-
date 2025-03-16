@@ -11,6 +11,10 @@ pipeline {
         GITHUB_TOKEN = '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'  // Используйте Jenkins Credentials для хранения токена
         FRONTEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/frontend:1.0.0"
         BACKEND_IMAGE = "ghcr.io/${env.GITHUB_USERNAME}/backend:1.0.0"
+
+        DOCKER_REGISTRY = "ghcr.io"
+        DOCKER_USERNAME = "timkad"
+        DOCKER_PASSWORD = 'Tim13Tim13Tim13!'
     }
 
     stages {
@@ -44,7 +48,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        echo ${env.DOCKER_PASSWORD} | docker login ${env.DOCKER_REGISTRY} -u ${env.DOCKER_USERNAME} --password-stdin
+                        echo ${DOCKER_PASSWORD} | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
                     """
                 }
             }
