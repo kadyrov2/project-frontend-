@@ -52,7 +52,7 @@ pipeline {
                 steps {
                     script {
                         // Тегируем образ для пуша в Yandex Container Registry
-                        sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+                        sh "docker tag ${IMAGE_FRONTEND}:${DOCKER_IMAGE_TAG} ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
                         
                         // Пушим образ в Yandex Container Registry
                         sh "docker push ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
