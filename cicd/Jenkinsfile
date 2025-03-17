@@ -55,7 +55,7 @@ pipeline {
                         sh "docker tag ${IMAGE_FRONTEND}:${DOCKER_IMAGE_TAG} ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
                         
                         // Пушим образ в Yandex Container Registry
-                        sh "docker push ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+                        // sh "docker push ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
                     }
                 }
              }
