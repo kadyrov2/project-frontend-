@@ -128,14 +128,15 @@ pipeline {
 
     }
 
-    post {
-        success {
-            // Действия после успешного завершения пайплайна
-            echo 'Build and deploy completed successfully!'
+        post {
+            success {
+                // Действия после успешного завершения пайплайна
+                echo 'Build and deploy completed successfully!'
+            }
+            failure {
+                // Действия в случае ошибки
+                echo 'Build or deploy failed!'
+            }
         }
-        failure {
-            // Действия в случае ошибки
-            echo 'Build or deploy failed!'
-        }
-    }
+   }
 }
