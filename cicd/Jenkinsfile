@@ -11,7 +11,7 @@ pipeline {
 
         DOCKER_IMAGE_BACKEND = "${DOCKER_REGISTRY}/backend-app:${BUILD_NUMBER}"
 
-        DOCKER_REGISTRY = "cr.yandex/crppq9qttclm6v54ocop/frontend-app"
+        DOCKER_REGISTRY = "cr.yandex/crppq9qttclm6v54ocop"
 
         YC_OAUTH_TOKEN = 'y0__xCC7vykBhjB3RMg852KmxJg7wFn7smq84JZ46GWZN-qbUbBMA'
         
@@ -117,7 +117,7 @@ pipeline {
                 script {
                     echo 'Публикация Docker-образов в реестр...'
 
-                     sh " sudo docker push ${DOCKER_REGISTRY}"
+                     sh " sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_FRONTEND}"
                     // Публикация образа бэкенда
                     // sh "docker push ${DOCKER_IMAGE_BACKEND}"
                 }
