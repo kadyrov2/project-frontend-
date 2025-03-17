@@ -15,6 +15,8 @@ pipeline {
         DOCKER_REGISTRY = "dockerhub.timeweb.cloud"
         DOCKER_USERNAME = "timkad"
         DOCKER_PASSWORD = 'Komarova1515!'
+        YC_OAUTH_TOKEN = 'y0__xCC7vykBhjB3RMg852KmxJg7wFn7smq84JZ46GWZN-qbUbBMA'
+        
     }
 
     stages {
@@ -33,18 +35,28 @@ pipeline {
             }
         }
 
-         stage('Login to Yandex Cloud Registry') {
+          stage('Авторизация в Yandex Container Registry') {
             steps {
                 script {
-                    // Авторизация в Yandex Cloud Registry
-                    withCredentials([file(credentialsId: 'yandex-cloud-registry-key', variable: 'YC_KEY')]) {
-                        sh '''
-                          docker login --username json_key --password-stdin cr.yandex
-                        '''
-                    }
+                    // Авторизуемся в Yandex Container Registry
+                    sh "echo ${YC_OAUTH_TOKEN} | docker login --username oauth --password-stdin cr.yandex"
                 }
             }
         }
+
+
+        //  stage('Login to Yandex Cloud Registry') {
+        //     steps {
+        //         script {
+        //             // Авторизация в Yandex Cloud Registry
+        //             withCredentials([file(credentialsId: 'yandex-cloud-registry-key', variable: 'YC_KEY')]) {
+        //                 sh '''
+        //                   docker login --username json_key --password-stdin cr.yandex
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Push Docker Image') {
             steps {
