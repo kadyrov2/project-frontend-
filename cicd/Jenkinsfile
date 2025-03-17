@@ -35,16 +35,26 @@ pipeline {
             }
         }
 
-          stage('Авторизация в Yandex Container Registry') {
+          stage(' Auth Yandex Container Registry') {
             steps {
                 script {
-                    // Авторизуемся в Yandex Container Registry
                     sh "echo ${YC_OAUTH_TOKEN} | docker login --username oauth --password-stdin cr.yandex"
                 }
             }
         }
 
-
+         stage('Push image') {
+            steps {
+                script {
+ 
+                    // sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ${FRONTEND_IMAGE}"
+                    
+                    // Пушим образ в Yandex Container Registry
+                    sh "docker push ${FRONTEND_IMAGE}"
+                }
+            }
+        }
+    }
         //  stage('Login to Yandex Cloud Registry') {
         //     steps {
         //         script {
@@ -111,17 +121,17 @@ pipeline {
         //     }
         // }
 
-        stage('Deploy') {
-            steps {
-                // Копирование собранных файлов в директорию деплоя
-                dir(env.FRONTEND_DIR) {
-                    // bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/frontend"
-                }
-                dir(env.BACKEND_DIR) {
-                    // bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/backend"
-                }
-            }
-        }
+        // stage('Deploy') {
+        //     steps {
+        //         // Копирование собранных файлов в директорию деплоя
+        //         dir(env.FRONTEND_DIR) {
+        //             // bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/frontend"
+        //         }
+        //         dir(env.BACKEND_DIR) {
+        //             // bat "dotnet publish --configuration ${env.BUILD_CONFIGURATION} --output ${env.DEPLOY_DIR}/backend"
+        //         }
+        //     }
+        // }
     }
 
     post {
