@@ -3,7 +3,7 @@ pipeline {
 
     environment {
 
-        FRONTEND_DIR = './' // Путь к проекту фронтенда
+        FRONTEND_DIR = './cicd/frontend' // Путь к проекту фронтенда
         BACKEND_DIR = 'backend'   // Путь к проекту бэкенда
         DOTNET_VERSION = '6.0'    // Версия .NET
         PUBLISH_OUTPUT_DIR = 'publish' // Папка для опубликованных файлов
