@@ -11,7 +11,7 @@ pipeline {
 
         DOCKER_IMAGE_BACKEND = "${DOCKER_REGISTRY}/backend-app:${BUILD_NUMBER}"
 
-        DOCKER_REGISTRY = -"cr.yandex/crppq9qttclm6v54ocop/${DOCKER_IMAGE_FRONTEND}"
+        DOCKER_REGISTRY = "cr.yandex/crppq9qttclm6v54ocop/${DOCKER_IMAGE_FRONTEND}"
 
         YC_OAUTH_TOKEN = 'y0__xCC7vykBhjB3RMg852KmxJg7wFn7smq84JZ46GWZN-qbUbBMA'
         
