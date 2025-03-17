@@ -48,17 +48,17 @@ pipeline {
             }
         }
 
-        stage('Пуш Docker-образа в Yandex Container Registry') {
-            steps {
-                script {
-                    // Тегируем образ для пуша в Yandex Container Registry
-                    sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
-                    
-                    // Пушим образ в Yandex Container Registry
-                    sh "docker push ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+            stage('Push') {
+                steps {
+                    script {
+                        // Тегируем образ для пуша в Yandex Container Registry
+                        sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+                        
+                        // Пушим образ в Yandex Container Registry
+                        sh "docker push ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+                    }
                 }
-            }
-        }
+             }
 
     }
 
