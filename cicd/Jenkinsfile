@@ -2,16 +2,14 @@ pipeline {
     agent any
 
     environment {
-
+        DOCKER_REGISTRY = 'cr.yandex/crppq9qttclm6v54ocop'
         FRONTEND_DIR = 'frontend' // Путь к проекту фронтенда
         BACKEND_DIR = 'backend'   // Путь к проекту бэкенда
-
+        DOTNET_VERSION = '6.0'    // Версия .NET
         PUBLISH_OUTPUT_DIR = 'publish' // Папка для опубликованных файлов
         DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY}/frontend-app:${BUILD_NUMBER}"
 
         DOCKER_IMAGE_BACKEND = "${DOCKER_REGISTRY}/backend-app:${BUILD_NUMBER}"
-
-        DOCKER_REGISTRY = "cr.yandex/crppq9qttclm6v54ocop"
 
         YC_OAUTH_TOKEN = 'y0__xCC7vykBhjB3RMg852KmxJg7wFn7smq84JZ46GWZN-qbUbBMA'
         
@@ -117,7 +115,7 @@ pipeline {
                 script {
                     echo 'Публикация Docker-образов в реестр...'
 
-                     sh " sudo docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_FRONTEND}"
+                     sh " sudo docker push ${DOCKER_IMAGE_FRONTEND}"
                     // Публикация образа бэкенда
                     // sh "docker push ${DOCKER_IMAGE_BACKEND}"
                 }
