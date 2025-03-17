@@ -117,7 +117,7 @@ pipeline {
                 script {
                     echo 'Публикация Docker-образов в реестр...'
 
-                     sh " sudo docker push ${DOCKER_IMAGE_FRONTEND}"
+                     sh " sudo docker push ${DOCKER_REGISTRY}"
                     // Публикация образа бэкенда
                     // sh "docker push ${DOCKER_IMAGE_BACKEND}"
                 }
