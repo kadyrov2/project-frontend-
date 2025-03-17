@@ -50,7 +50,7 @@ pipeline {
                     // sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ${FRONTEND_IMAGE}"
                     
                     // Пушим образ в Yandex Container Registry
-                    sh "docker push ${FRONTEND_IMAGE}"
+                    sh " sudo docker push ${FRONTEND_IMAGE}"
                 }
             }
         }
