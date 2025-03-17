@@ -3,18 +3,22 @@ pipeline {
 
     environment {
         FRONTEND_DIR = 'frontend'  
-        BACKEND_DIR = 'backend/Service'   
+        BACKEND_DIR = 'backend'   
         BUILD_CONFIGURATION = 'Release'  
-        DEPLOY_DIR = '/path/to/deploy'   
 
-        GITHUB_USERNAME = 'timlad'
-        GITHUB_TOKEN = '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'  
-        FRONTEND_IMAGE = "cr.yandex/${env.GITHUB_USERNAME}/frontend:1.0.0"
-        BACKEND_IMAGE = "cr.yandex/${env.GITHUB_USERNAME}/backend:1.0.0"
+        // Укажите ID вашего реестра в Yandex Container Registry
+        YC_REGISTRY_ID = 'crppq9qttclm6v54ocop'
+        
+        // Укажите имя вашего образа
+        IMAGE_FRONTEND = 'frontend'
+        
+        // Укажите тег для образа
+        DOCKER_IMAGE_TAG = '1.0.0'
+        
+                // Укажите полное имя репозитория в Yandex Container Registry
+        YC_REPOSITORY = "cr.yandex/${YC_REGISTRY_ID}/${IMAGE_FRONTEND}"
 
-        DOCKER_REGISTRY = "dockerhub.timeweb.cloud"
-        DOCKER_USERNAME = "timkad"
-        DOCKER_PASSWORD = 'Komarova1515!'
+
         YC_OAUTH_TOKEN = 'y0__xCC7vykBhjB3RMg852KmxJg7wFn7smq84JZ46GWZN-qbUbBMA'
         
     }
@@ -31,6 +35,7 @@ pipeline {
                 dir(env.FRONTEND_DIR) {
                     sh 'dotnet restore'
                     sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
+                    sh 'dotnet publish --configuration Release --output ./publish'
                 }
             }
         }
@@ -43,40 +48,43 @@ pipeline {
             }
         }
 
-         stage('Push image') {
+        stage('Пуш Docker-образа в Yandex Container Registry') {
             steps {
                 script {
- 
-                    // sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ${FRONTEND_IMAGE}"
+                    // Тегируем образ для пуша в Yandex Container Registry
+                    sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
                     
                     // Пушим образ в Yandex Container Registry
-                    sh " sudo docker push ${FRONTEND_IMAGE}"
+                    sh "docker push ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
                 }
             }
         }
-      // }
-        //  stage('Login to Yandex Cloud Registry') {
-        //     steps {
-        //         script {
-        //             // Авторизация в Yandex Cloud Registry
-        //             withCredentials([file(credentialsId: 'yandex-cloud-registry-key', variable: 'YC_KEY')]) {
-        //                 sh '''
-        //                   docker login --username json_key --password-stdin cr.yandex
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
 
-        stage('Push Docker Image') {
+        stage('Пуш Docker-образа в Yandex Container Registry') {
             steps {
                 script {
-                    docker.withRegistry('https://cr.yandex') {
-                      docker.image("${FRONTEND_IMAGE}").push()
-                    }
+                    // Тегируем образ для пуша в Yandex Container Registry
+                    sh "docker tag ${IMAGE_FRONTEND}:${DOCKER_IMAGE_TAG} ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+                    
+                    // Пушим образ в Yandex Container Registry
+                    sh "docker push ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
                 }
             }
         }
+
+            // }
+            //  stage('Login to Yandex Cloud Registry') {
+            //     steps {
+            //         script {
+            //             // Авторизация в Yandex Cloud Registry
+            //             withCredentials([file(credentialsId: 'yandex-cloud-registry-key', variable: 'YC_KEY')]) {
+            //                 sh '''
+            //                   docker login --username json_key --password-stdin cr.yandex
+            //                 '''
+            //             }
+            //         }
+            //     }
+            // }
 
         // stage('Build Backend') {
         //     steps {
@@ -98,16 +106,7 @@ pipeline {
      
         // }
 
-        stage('Push Images') {
-            steps {
-                script {
-                    sh "docker push ${env.FRONTEND_IMAGE}"
-                    // sh "docker push ${env.BACKEND_IMAGE}"
-                }
-            }
-        }
-
-
+ 
         // stage('Run Tests') {
         //     steps {
         //         dir(env.BACKEND_DIR) {
