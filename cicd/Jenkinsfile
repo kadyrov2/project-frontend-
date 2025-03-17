@@ -54,7 +54,7 @@ pipeline {
                 }
             }
         }
-    }
+      // }
         //  stage('Login to Yandex Cloud Registry') {
         //     steps {
         //         script {
