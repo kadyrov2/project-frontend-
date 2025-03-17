@@ -114,12 +114,8 @@ pipeline {
             steps {
                 script {
                     echo 'Публикация Docker-образов в реестр...'
-                    // Логин в Docker Registry (замените на свои учетные данные)
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin ${DOCKER_REGISTRY}"
-                    }
-                    // Публикация образа фронтенда
-                    sh "docker push ${DOCKER_IMAGE_FRONTEND}"
+
+                     sh " sudo docker push ${DOCKER_IMAGE_FRONTEND}"
                     // Публикация образа бэкенда
                     // sh "docker push ${DOCKER_IMAGE_BACKEND}"
                 }
