@@ -2,45 +2,107 @@ pipeline {
     agent any
 
     environment {
-        FRONTEND_DIR = 'frontend'  
-        BACKEND_DIR = 'backend'   
-        BUILD_CONFIGURATION = 'Release'  
 
-        // Укажите ID вашего реестра в Yandex Container Registry
-        YC_REGISTRY_ID = 'crppq9qttclm6v54ocop'
-        
-        // Укажите имя вашего образа
-        IMAGE_FRONTEND = 'frontend'
-        
-        // Укажите тег для образа
-        DOCKER_IMAGE_TAG = '1.0.0'
-        
-                // Укажите полное имя репозитория в Yandex Container Registry
-        YC_REPOSITORY = "cr.yandex/${YC_REGISTRY_ID}/${IMAGE_FRONTEND}"
-
+        FRONTEND_DIR = 'frontend' // Путь к проекту фронтенда
+        BACKEND_DIR = 'backend'   // Путь к проекту бэкенда
+        DOTNET_VERSION = '6.0'    // Версия .NET
+        PUBLISH_OUTPUT_DIR = 'publish' // Папка для опубликованных файлов
+        DOCKER_REGISTRY = 'your-docker-registry' // Ваш Docker Registry
+        DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY}/frontend-app:${BUILD_NUMBER}"
+        DOCKER_IMAGE_BACKEND = "${DOCKER_REGISTRY}/backend-app:${BUILD_NUMBER}"
 
         YC_OAUTH_TOKEN = 'y0__xCC7vykBhjB3RMg852KmxJg7wFn7smq84JZ46GWZN-qbUbBMA'
         
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
+            stage('Checkout') {
+                steps {
+                    checkout scm
+                }
             }
-        }
 
-         stage('Build Frontend') {
+            stage('Build Frontend') {
+                steps {
+                    script {
+                        echo 'Сборка фронтенда...'
+                        dir(FRONTEND_DIR) {
+                            sh 'dotnet restore'
+                            sh 'dotnet build --configuration Release'
+                        }
+                    }
+                }
+            }
+
+            // stage('Build Backend') {
+            //     steps {
+            //         script {
+            //             echo 'Сборка бэкенда...'
+            //             dir(BACKEND_DIR) {
+            //                 sh 'dotnet restore'
+            //                 sh 'dotnet build --configuration Release'
+            //             }
+            //         }
+            //     }
+            // }
+
+   
+          
+        //  stage('Build Backend') {
+        //     steps {
+        //         script {
+        //             echo 'Сборка бэкенда...'
+        //             dir(BACKEND_DIR) {
+        //                 sh 'dotnet restore'
+        //                 sh 'dotnet build --configuration Release'
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Publish Frontend') {
             steps {
-                dir(env.FRONTEND_DIR) {
-                    sh 'dotnet restore'
-                    sh "dotnet build --configuration ${env.BUILD_CONFIGURATION}"
-                    sh 'dotnet publish --configuration Release --output ./publish'
+                script {
+                    echo 'Публикация фронтенда...'
+                    dir(FRONTEND_DIR) {
+                        sh "dotnet publish --configuration Release --output ${PUBLISH_OUTPUT_DIR}/frontend"
+                    }
                 }
             }
         }
 
-          stage(' Auth Yandex Container Registry') {
+        // stage('Publish Backend') {
+        //     steps {
+        //         script {
+        //             echo 'Публикация бэкенда...'
+        //             dir(BACKEND_DIR) {
+        //                 sh "dotnet publish --configuration Release --output ${PUBLISH_OUTPUT_DIR}/backend"
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    echo 'Сборка Docker-образов...'
+                    // Сборка образа для фронтенда
+                    dir(FRONTEND_DIR) {
+                        sh """
+                            docker build -t ${DOCKER_IMAGE_FRONTEND} .
+                        """
+                    }
+                    // // Сборка образа для бэкенда
+                    // dir(BACKEND_DIR) {
+                    //     sh """
+                    //         docker build -t ${DOCKER_IMAGE_BACKEND} .
+                    //     """
+                    // }
+                }
+            }
+        }
+
+        stage(' Auth Yandex Container Registry') {
             steps {
                 script {
                     sh "echo ${YC_OAUTH_TOKEN} | docker login --username oauth --password-stdin cr.yandex"
@@ -48,17 +110,21 @@ pipeline {
             }
         }
 
-            stage('Push') {
-                steps {
-                    script {
-                        // Тегируем образ для пуша в Yandex Container Registry
-                        sh "docker tag ${IMAGE_FRONTEND}:${DOCKER_IMAGE_TAG} ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
-                        
-                        // Пушим образ в Yandex Container Registry
-                        // sh "docker push ${YC_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+        stage('Push Docker Images') {
+            steps {
+                script {
+                    echo 'Публикация Docker-образов в реестр...'
+                    // Логин в Docker Registry (замените на свои учетные данные)
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin ${DOCKER_REGISTRY}"
                     }
+                    // Публикация образа фронтенда
+                    sh "docker push ${DOCKER_IMAGE_FRONTEND}"
+                    // Публикация образа бэкенда
+                    // sh "docker push ${DOCKER_IMAGE_BACKEND}"
                 }
-             }
+            }
+      
 
     }
 
