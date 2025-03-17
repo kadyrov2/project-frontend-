@@ -26,7 +26,7 @@ pipeline {
                 steps {
                     script {
                         echo 'Сборка фронтенда...'
-                        sh 'ls -la /var/lib/jenkins/workspace/Build/frontend/publish'
+                        sh 'ls -la /var/lib/jenkins/workspace/Build/frontend/publish/frontend'
                         dir(FRONTEND_DIR) {
                             sh 'dotnet restore'
                             sh 'dotnet build --configuration Release'
