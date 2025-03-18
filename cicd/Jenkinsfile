@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY = 'cr.yandex/b1gubt7c4nhscvbd5tbn'
+        DOCKER_REGISTRY = 'cr.yandex/crppq9qttclm6v54ocop'
         FRONTEND_DIR = 'frontend' // Путь к проекту фронтенда
         BACKEND_DIR = 'backend'   // Путь к проекту бэкенда
         DOTNET_VERSION = '6.0'    // Версия .NET
