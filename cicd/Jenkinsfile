@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'cr.yandex/crppq9qttclm6v54ocop'
         FRONTEND_DIR = 'frontend' // Путь к проекту фронтенда
-        BACKEND_DIR = 'backend/Service/Service'   // Путь к проекту бэкенда
+        BACKEND_DIR = 'backend/Service'   // Путь к проекту бэкенда
         DOTNET_VERSION = '6.0'    // Версия .NET
         PUBLISH_OUTPUT_DIR = 'publish' // Папка для опубликованных файлов
         DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY}/frontend-app:${BUILD_NUMBER}"
