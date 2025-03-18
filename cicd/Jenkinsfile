@@ -22,17 +22,17 @@ pipeline {
                 }
             }
 
-            stage('Build Frontend') {
-                steps {
-                    script {
-                        echo 'Сборка фронтенда...'
-                        dir(FRONTEND_DIR) {
-                            sh 'dotnet restore'
-                            sh 'dotnet build --configuration Release'
-                        }
-                    }
-                }
-            }
+            // stage('Build Frontend') {
+            //     steps {
+            //         script {
+            //             echo 'Сборка фронтенда...'
+            //             dir(FRONTEND_DIR) {
+            //                 sh 'dotnet restore'
+            //                 sh 'dotnet build --configuration Release'
+            //             }
+            //         }
+            //     }
+            // }
 
             stage('Build Backend') {
                 steps {
