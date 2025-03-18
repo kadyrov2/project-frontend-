@@ -105,7 +105,14 @@ pipeline {
         stage(' Auth Yandex Container Registry') {
             steps {
                 script {
-                    sh "echo ${YC_OAUTH_TOKEN} | docker login --username oauth --password-stdin cr.yandex"
+                    // sh "echo ${YC_OAUTH_TOKEN} | docker login --username oauth --password-stdin cr.yandex"
+
+                sh'''
+                sudo docker login cr.yandex \
+                 --username iam \
+                 --password t1.9euelZrInc6UnZmLmc2Sj8iNnI_Ol-3rnpWazJqJnM2bxsuMyZCOypiNjpHl8_deIhpB-e8UC080_t3z9x5RF0H57xQLTzT-zef1656Vmo2YipqYyceRmZ2Xi8qZypuW7_zF656Vmo2YipqYyceRmZ2Xi8qZypuW.JZbPYumIm42auTeshXUIY0q2gVlouh6mdQDJ6UF6ZsU2q_NQys1C2SKPiKWRMTAhYDz9mKTr1n35yyeFc-lOCA
+                '''
+                    
                 }
             }
         }
