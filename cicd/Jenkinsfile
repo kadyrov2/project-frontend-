@@ -114,8 +114,8 @@ pipeline {
             steps {
                 script {
                     echo 'Публикация Docker-образов в реестр...'
-
-                     sh " sudo docker push ${DOCKER_IMAGE_FRONTEND}"
+                    yc container image create --name frontend-app --path ./ --tag 48
+                    //  sh " sudo docker push ${DOCKER_IMAGE_FRONTEND}"
                     // Публикация образа бэкенда
                     // sh "docker push ${DOCKER_IMAGE_BACKEND}"
                 }
