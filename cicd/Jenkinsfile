@@ -80,12 +80,12 @@ pipeline {
                             docker build -t ${DOCKER_IMAGE_FRONTEND} .
                         """
                     }
-                    // // Сборка образа для бэкенда
-                    // dir(BACKEND_DIR) {
-                    //     sh """
-                    //         docker build -t ${DOCKER_IMAGE_BACKEND} .
-                    //     """
-                    // }
+                    // Сборка образа для бэкенда
+                    dir(BACKEND_DIR) {
+                        sh """
+                            docker build -t ${DOCKER_IMAGE_BACKEND} .
+                        """
+                    }
                 }
             }
         }
@@ -94,13 +94,11 @@ pipeline {
             steps {
                 script {
                     // sh "echo ${YC_OAUTH_TOKEN} | docker login --username oauth --password-stdin cr.yandex"
-
-                sh'''
-                sudo docker login cr.yandex \
-                 --username iam \
-                 --password t1.9euelZrInc6UnZmLmc2Sj8iNnI_Ol-3rnpWazJqJnM2bxsuMyZCOypiNjpHl8_deIhpB-e8UC080_t3z9x5RF0H57xQLTzT-zef1656Vmo2YipqYyceRmZ2Xi8qZypuW7_zF656Vmo2YipqYyceRmZ2Xi8qZypuW.JZbPYumIm42auTeshXUIY0q2gVlouh6mdQDJ6UF6ZsU2q_NQys1C2SKPiKWRMTAhYDz9mKTr1n35yyeFc-lOCA
-                '''
-                    
+                    sh'''
+                    sudo docker login cr.yandex \
+                    --username iam \
+                    --password t1.9euelZrInc6UnZmLmc2Sj8iNnI_Ol-3rnpWazJqJnM2bxsuMyZCOypiNjpHl8_deIhpB-e8UC080_t3z9x5RF0H57xQLTzT-zef1656Vmo2YipqYyceRmZ2Xi8qZypuW7_zF656Vmo2YipqYyceRmZ2Xi8qZypuW.JZbPYumIm42auTeshXUIY0q2gVlouh6mdQDJ6UF6ZsU2q_NQys1C2SKPiKWRMTAhYDz9mKTr1n35yyeFc-lOCA
+                    '''                  
                 }
             }
         }
@@ -112,7 +110,7 @@ pipeline {
                     // sh "   yc container image create --name frontend-app --path ./ --tag 48 "
                      sh " sudo docker push ${DOCKER_IMAGE_FRONTEND}"
                     // Публикация образа бэкенда
-                    // sh "docker push ${DOCKER_IMAGE_BACKEND}"
+                     sh "docker push ${DOCKER_IMAGE_BACKEND}"
                 }
             }
     
