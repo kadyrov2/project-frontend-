@@ -34,53 +34,41 @@ pipeline {
                 }
             }
 
-            // stage('Build Backend') {
-            //     steps {
-            //         script {
-            //             echo 'Сборка бэкенда...'
-            //             dir(BACKEND_DIR) {
-            //                 sh 'dotnet restore'
-            //                 sh 'dotnet build --configuration Release'
-            //             }
-            //         }
-            //     }
-            // }
+            stage('Build Backend') {
+                steps {
+                    script {
+                        echo 'Сборка бэкенда...'
+                        dir(BACKEND_DIR) {
+                            sh 'dotnet restore'
+                            sh 'dotnet build --configuration Release'
+                        }
+                    }
+                }
+            }
 
    
-          
-        //  stage('Build Backend') {
+
+        // stage('Publish Frontend') {
         //     steps {
         //         script {
-        //             echo 'Сборка бэкенда...'
-        //             dir(BACKEND_DIR) {
-        //                 sh 'dotnet restore'
-        //                 sh 'dotnet build --configuration Release'
+        //             echo 'Публикация фронтенда...'
+        //             dir(FRONTEND_DIR) {
+        //                 sh "dotnet publish --configuration Release --output ${PUBLISH_OUTPUT_DIR}/frontend"
         //             }
         //         }
         //     }
         // }
 
-        stage('Publish Frontend') {
+        stage('Publish Backend') {
             steps {
                 script {
-                    echo 'Публикация фронтенда...'
-                    dir(FRONTEND_DIR) {
-                        sh "dotnet publish --configuration Release --output ${PUBLISH_OUTPUT_DIR}/frontend"
+                    echo 'Публикация бэкенда...'
+                    dir(BACKEND_DIR) {
+                        sh "dotnet publish --configuration Release --output ${PUBLISH_OUTPUT_DIR}/backend"
                     }
                 }
             }
         }
-
-        // stage('Publish Backend') {
-        //     steps {
-        //         script {
-        //             echo 'Публикация бэкенда...'
-        //             dir(BACKEND_DIR) {
-        //                 sh "dotnet publish --configuration Release --output ${PUBLISH_OUTPUT_DIR}/backend"
-        //             }
-        //         }
-        //     }
-        // }
 
         stage('Build Docker Images') {
             steps {
