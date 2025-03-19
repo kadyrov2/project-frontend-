@@ -7,7 +7,7 @@ EXPOSE 8081
 # Этап сборки
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["./Service.csproj", "Service/"]
+COPY ["./Service/Service.csproj", "Service/"]
 RUN dotnet restore "./Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
