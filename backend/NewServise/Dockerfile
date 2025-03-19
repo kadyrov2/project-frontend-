@@ -15,9 +15,9 @@ EXPOSE 8080
 # Этот этап используется для сборки проекта службы
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 # Установите зависимости clang/zlib1g-dev для публикации в машинном коде
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    clang zlib1g-dev
+# RUN apt-get update \
+#     && apt-get install -y --no-install-recommends \
+#     clang zlib1g-dev
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["NewServise/NewServise.csproj", "NewServise/"]
