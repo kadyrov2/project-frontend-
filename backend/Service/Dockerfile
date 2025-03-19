@@ -11,6 +11,7 @@ COPY ["./Service.csproj", "Service/"]
 RUN dotnet restore "./Service/Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
+RUN  ls -l /src/Service/
 RUN dotnet build "Service.csproj" -c Release -o /app/build
 
 # Этап публикации
