@@ -40,8 +40,8 @@ pipeline {
                         echo 'Сборка бэкенда...'
                         dir(BACKEND_DIR) {
                             // sh 'yes | docker system prune -a' 
-                            sh 'dotnet restore --no-cache'
-                            sh 'dotnet build  --no-cache --configuration Release'
+                            sh 'dotnet restore'
+                            sh 'dotnet build  --configuration Release'
                         }
                     }
                 }
