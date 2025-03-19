@@ -8,7 +8,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY ["./Service.csproj", "Service/"]
+COPY [".Service/Service.csproj", "Service/"]
 RUN  ls -la /src/Service/
 
 RUN dotnet restore "./Service.csproj"
