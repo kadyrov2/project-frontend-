@@ -1,34 +1,23 @@
+# Базовый образ для runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
-# Этот этап используется для сборки проекта службы
+# Этап сборки
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-
-RUN pwd
-RUN ls -l
-
-COPY ["./Service/Service.csproj", "Service/"]
+COPY ["./Service.csproj", "Service/"]
 RUN dotnet restore "./Service/Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
+RUN dotnet build "Service.csproj" -c Release -o /app/build
 
-RUN pwd
-RUN ls -l
-
-RUN dotnet build "../Service/Service.csproj" -c Release -o /app/build
-
-# Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
+# Этап публикации
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Service.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Service.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
+# Финальный этап
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
