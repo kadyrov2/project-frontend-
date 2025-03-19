@@ -39,6 +39,7 @@ pipeline {
                     script {
                         echo 'Сборка бэкенда...'
                         dir(BACKEND_DIR) {
+                            sk'ls -l /var/lib/jenkins/workspace/Build/backend/Service/'
                             sh 'dotnet restore'
                             sh 'dotnet build --configuration Release'
                         }
