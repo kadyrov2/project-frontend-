@@ -9,20 +9,20 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 COPY [".Service/Service.csproj", "Service/"]
-RUN  ls -la /src/Service/
+RUN  ls -la
 
 RUN dotnet restore "./Service.csproj"
 COPY . .
-WORKDIR "/src/Service"
+WORKDIR "/src/Service" 
 
-# RUN dotnet build "Service.csproj" --no-cache -c Release -o /app/build
+RUN dotnet build "Service.csproj" --no-cache -c Release -o /app/build
 
-# # Этап публикации
-# FROM build AS publish
-# RUN dotnet publish "Service.csproj"  --no-cache -c Release -o /app/publish /p:UseAppHost=false
+# Этап публикации
+FROM build AS publish
+RUN dotnet publish "Service.csproj"  --no-cache -c Release -o /app/publish /p:UseAppHost=false
 
-# # Финальный этап
-# FROM base AS final
-# WORKDIR /app
-# COPY --from=publish /app/publish .
-# ENTRYPOINT ["dotnet", "Service.dll"]
+# Финальный этап
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Service.dll"]

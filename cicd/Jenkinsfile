@@ -39,8 +39,7 @@ pipeline {
                     script {
                         echo 'Сборка бэкенда...'
                         dir(BACKEND_DIR) {
-                            sh 'yes | docker system prune -a'
-                            sh 'ls -l /var/lib/jenkins/workspace/Build/backend/Service/'
+                            sh 'yes | docker system prune -a' 
                             sh 'dotnet restore --no-cache'
                             sh 'dotnet build  --no-cache --configuration Release'
                         }
