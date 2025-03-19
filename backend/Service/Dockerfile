@@ -9,12 +9,12 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 COPY ["./Service.csproj", "Service/"]
-
+RUN  ls -l /src/Service/
 
 RUN dotnet restore "./Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
-RUN  ls -l /src/Service/
+
 # RUN dotnet build "Service.csproj" --no-cache -c Release -o /app/build
 
 # # Этап публикации
