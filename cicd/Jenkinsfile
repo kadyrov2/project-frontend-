@@ -41,7 +41,7 @@ pipeline {
                         dir(BACKEND_DIR) {
                             // sh 'yes | docker system prune -a' 
                             sh 'dotnet restore'
-                            sh 'dotnet build  --configuration Debug'
+                            sh 'dotnet build  --configuration Release -v diag'
                         }
                     }
                 }
