@@ -75,12 +75,12 @@ pipeline {
             steps {
                 script {
                     echo 'Сборка Docker-образов...'
-                    // Сборка образа для фронтенда
-                    dir(FRONTEND_DIR) {
-                        sh """
-                            docker build -t ${DOCKER_IMAGE_FRONTEND} .
-                        """
-                    }
+                    // // Сборка образа для фронтенда
+                    // dir(FRONTEND_DIR) {
+                    //     sh """
+                    //         docker build -t ${DOCKER_IMAGE_FRONTEND} .
+                    //     """
+                    // }
                     // Сборка образа для бэкенда
                     dir(BACKEND_DIR) {
                         sh """
