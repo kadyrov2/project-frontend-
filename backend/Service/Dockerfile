@@ -9,12 +9,18 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+RUN pwd
+RUN ls -l
+
 COPY ["./Service.csproj", "Service/"]
 RUN dotnet restore "./Service/Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
-RUN ls -la
+
 RUN pwd
+RUN ls -l
+
 RUN dotnet build "../Service/Service.csproj" -c Release -o /app/build
 
 # Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
