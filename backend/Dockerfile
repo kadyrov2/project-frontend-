@@ -10,7 +10,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["./Service.csproj", "Service/"]
-RUN dotnet restore "./Service/Service.csproj"
+RUN dotnet restore "./Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
 RUN dotnet build "./Service.csproj" -c Release -o /app/build
