@@ -13,6 +13,7 @@ COPY ["./Service.csproj", "Service/"]
 RUN dotnet restore "./Service/Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
+RUN 'ls -l'
 RUN dotnet build "../Service/Service.csproj" -c Release -o /app/build
 
 # Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
