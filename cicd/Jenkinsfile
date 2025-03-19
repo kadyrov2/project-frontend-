@@ -41,7 +41,7 @@ pipeline {
                         dir(BACKEND_DIR) {
                             sh 'ls -l /var/lib/jenkins/workspace/Build/backend/Service/'
                             sh 'dotnet restore'
-                            // sh 'dotnet build --configuration Release'
+                            sh 'dotnet build --configuration Release'
                         }
                     }
                 }
