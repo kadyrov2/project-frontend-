@@ -13,7 +13,7 @@ WORKDIR /src
 RUN pwd
 RUN ls -l
 
-COPY ["./Service.csproj", "Service/"]
+COPY ["./Service/Service.csproj", "Service/"]
 RUN dotnet restore "./Service/Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
