@@ -8,15 +8,15 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["./Service.csproj", "Service/"]
-RUN dotnet restore "./Service/Service.csproj"
+RUN dotnet restore "./Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
 RUN  ls -l /src/Service/
-RUN dotnet build "Service.csproj" -c Release -o /app/build
+RUN dotnet build "Service.csproj" --no-cache -c Release -o /app/build
 
 # Этап публикации
 FROM build AS publish
-RUN dotnet publish "Service.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Service.csproj"  --no-cache -c Release -o /app/publish /p:UseAppHost=false
 
 # Финальный этап
 FROM base AS final
