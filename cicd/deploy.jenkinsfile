@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    environment {
+        // Укажите переменные окружения, если необходимо
+        DEPLOY_USER = 'your-deploy-user'
+        DEPLOY_HOST = 'your-deploy-host'
+        DEPLOY_PATH = '/path/to/deploy'
+        SSH_KEY = credentials('your-ssh-key-id') // ID вашего SSH ключа в Jenkins
+    }
+
+    stages {
+        stage('Сборка') {
+            steps {
+                echo 'Сборка приложения...'
+                // Здесь могут быть команды для сборки вашего приложения
+                sh 'mvn clean package' // Пример для Maven проекта
+            }
+        }
+
+        stage('Тестирование') {
+            steps {
+                echo 'Запуск тестов...'
+                // Здесь могут быть команды для запуска тестов
+                sh 'mvn test' // Пример для Maven проекта
+            }
+        }
+
+        stage('Деплой') {
+            steps {
+                echo 'Деплой приложения...'
+                script {
+                    // Копируем собранный артефакт на сервер
+                    sshagent([SSH_KEY]) {
+                        sh "scp -o StrictHostKeyChecking=no target/your-app.jar ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/your-app.jar"
+                    }
+
+                    // Останавливаем старую версию приложения и запускаем новую
+                    sshagent([SSH_KEY]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_HOST} '
+                                cd ${DEPLOY_PATH}
+                                ./stop-app.sh
+                                ./start-app.sh
+                            '
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Пайплайн успешно завершен!'
+        }
+        failure {
+            echo 'Пайплайн завершился с ошибкой.'
+        }
+    }
+}
