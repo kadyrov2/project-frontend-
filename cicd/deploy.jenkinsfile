@@ -41,6 +41,9 @@ pipeline {
 
 
         stage('Deploy Nginx with Helm') {
+              when {
+                expression { params.DELETE_DEPLOY == false }
+            }
             steps {
                 script {
                     // Разверните Nginx с помощью Helm
