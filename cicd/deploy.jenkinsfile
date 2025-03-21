@@ -2,38 +2,68 @@ pipeline {
     agent any
 
     environment {
-        // Укажите IP-адрес вашей виртуальной машины в Yandex Cloud
-        SERVER_IP = 'your_vm_ip'
-        // Укажите пользователя для подключения по SSH (обычно это 'yc-user' или 'ubuntu')
-        SSH_USER = 'yc-user'
-        // Укажите путь к приватному SSH-ключу для доступа к виртуальной машине
-        SSH_KEY = 'path_to_your_private_key'
-        // Укажите путь к конфигурации Nginx в вашем репозитории
-        NGINX_CONFIG_PATH = 'nginx_config/'
+        // Укажите имя вашего Kubernetes-кластера в Yandex Cloud
+        CLUSTER_NAME = 'tim-cluster'
+        // Укажите namespace, в котором будет развернут Nginx (по умолчанию 'default')
+        NAMESPACE = 'default'
+        // Укажите путь к манифестам Kubernetes в вашем репозитории
+        MANIFESTS_PATH = './cicd/helm/'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Клонируйте репозиторий с конфигурацией Nginx
-                git branch: 'main', url: 'https://github.com/your_repo/nginx_config.git'
+                // Клонируйте репозиторий с манифестами Kubernetes
+                git branch: 'main', url: 'https://github.com/kadyrov2/project.git'
+            }
+        }
+
+        stage('Configure kubectl') {
+            steps {
+                script {
+                    // Установите yc CLI (если не установлен)
+                    sh '''
+                        if ! command -v yc &> /dev/null; then
+                            echo "Installing yc CLI..."
+                            curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+                            source ~/.bashrc
+                        fi
+                    '''
+
+                    // Аутентификация в Yandex Cloud
+                    withCredentials([file(credentialsId: 'yandex-cloud-sa-key', variable: 'SA_KEY_FILE')]) {
+                        sh """
+                            yc config set service-account-key ${SA_KEY_FILE}
+                        """
+                    }
+
+                    // Получите kubeconfig для вашего кластера
+                    sh """
+                        yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external
+                    """
+                }
             }
         }
 
         stage('Deploy Nginx') {
             steps {
                 script {
-                    // Копируем конфигурацию Nginx на виртуальную машину в Yandex Cloud
+                    // Примените манифесты Kubernetes для развертывания Nginx
                     sh """
-                        scp -o StrictHostKeyChecking=no -i ${SSH_KEY} -r ${NGINX_CONFIG_PATH} ${SSH_USER}@${SERVER_IP}:/tmp/nginx_config/
+                        kubectl apply -f ${MANIFESTS_PATH}/nginx-deployment.yaml -n ${NAMESPACE}
+                        kubectl apply -f ${MANIFESTS_PATH}/nginx-service.yaml -n ${NAMESPACE}
                     """
+                }
+            }
+        }
 
-                    // Подключаемся к виртуальной машине и перемещаем конфигурацию в /etc/nginx/
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    // Проверьте статус развертывания
                     sh """
-                        ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${SSH_USER}@${SERVER_IP} '
-                            sudo mv /tmp/nginx_config/* /etc/nginx/ &&
-                            sudo systemctl restart nginx
-                        '
+                        kubectl get pods -n ${NAMESPACE} -l app=nginx
+                        kubectl get svc -n ${NAMESPACE} -l app=nginx
                     """
                 }
             }
@@ -42,10 +72,10 @@ pipeline {
 
     post {
         success {
-            echo 'Nginx успешно развернут на Yandex Cloud!'
+            echo 'Nginx успешно развернут в Yandex Managed Kubernetes!'
         }
         failure {
-            echo 'Ошибка при развертывании Nginx на Yandex Cloud.'
+            echo 'Ошибка при развертывании Nginx в Yandex Managed Kubernetes.'
         }
     }
 }
