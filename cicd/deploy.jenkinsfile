@@ -12,6 +12,10 @@ pipeline {
         HELM_CHART_PATH = './cicd/helm/'
     }
 
+    parameters {
+        booleanParam(name: 'DELETE_DEPLOY', defaultValue: false, description: 'Удалить деплой после завершения?')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -23,15 +27,11 @@ pipeline {
         stage('Configure kubectl') {
             steps {
                 script {
-  
-                    // Аутентификация в Yandex Cloud
                     withCredentials([file(credentialsId: 'yandex-cloud-sa-key', variable: 'SA_KEY_FILE')]) {
                         sh """
                             ~/yandex-cloud/bin/yc config set service-account-key ${SA_KEY_FILE}
                         """
                     }
-
-                    // Получите kubeconfig для вашего кластера
                     sh """
                         ~/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external --force
                     """
@@ -51,6 +51,21 @@ pipeline {
                             --set replicaCount=2 \
                             --set service.type=LoadBalancer
                     """
+                }
+            }
+        }
+
+        stage('Optional: Delete Deployment') {
+            when {
+                expression { params.DELETE_DEPLOY == true }
+            }
+            steps {
+                script {
+                    // Удалите релиз Helm, если параметр DELETE_DEPLOY равен true
+                    sh """
+                        helm uninstall ${HELM_RELEASE_NAME} --namespace ${NAMESPACE}
+                    """
+                    echo "Деплой ${HELM_RELEASE_NAME} успешно удален."
                 }
             }
         }
