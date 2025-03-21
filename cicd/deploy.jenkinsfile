@@ -13,7 +13,7 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: 'DELETE_DEPLOY', defaultValue: false, description: 'Удалить деплой после завершения?')
+        booleanParam(name: 'DELETE_DEPLOY', defaultValue: false, description: 'Удалить деплой ?')
     }
 
     stages {
