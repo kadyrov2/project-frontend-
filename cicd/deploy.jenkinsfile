@@ -21,15 +21,6 @@ pipeline {
         stage('Configure kubectl') {
             steps {
                 script {
-                    // Установите yc CLI (если не установлен)
-                    sh '''
-                        if ! command -v yc &> /dev/null; then
-                            echo "Installing yc CLI..."
-                            curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-                            source ~/.bashrc
-                        fi
-                    '''
-
                     // Аутентификация в Yandex Cloud
                     withCredentials([file(credentialsId: 'yandex-cloud-sa-key', variable: 'SA_KEY_FILE')]) {
                         sh """
