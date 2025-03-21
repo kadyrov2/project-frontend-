@@ -4,46 +4,52 @@ pipeline {
     environment {
         // Укажите имя вашего Kubernetes-кластера в Yandex Cloud
         CLUSTER_NAME = 'tim-cluster'
-        // Укажите namespace, в котором будет развернут Nginx (по умолчанию 'default')
+        // Укажите namespace, в котором будет развернут Nginx
         NAMESPACE = 'default'
-        // Укажите путь к манифестам Kubernetes в вашем репозитории
-        MANIFESTS_PATH = './cicd/helm/'
+        // Укажите имя Helm-релиза
+        HELM_RELEASE_NAME = 'nginx'
+        // Укажите путь к Helm-чарту (например, в вашем репозитории)
+        HELM_CHART_PATH = './cicd/helm/'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Клонируйте репозиторий с манифестами Kubernetes
-                git branch: 'main', url: 'https://github.com/kadyrov2/project.git'
+                // Клонируйте репозиторий с Helm-чартом
+                git branch: 'main', url: 'https://github.com/your_repo/nginx-helm-chart.git'
             }
         }
 
         stage('Configure kubectl') {
             steps {
                 script {
+  
                     // Аутентификация в Yandex Cloud
                     withCredentials([file(credentialsId: 'yandex-cloud-sa-key', variable: 'SA_KEY_FILE')]) {
                         sh """
-                            echo ${SA_KEY_FILE}
-                           ~/yandex-cloud/bin/yc config set service-account-key ${SA_KEY_FILE}
+                            yc config set service-account-key ${SA_KEY_FILE}
                         """
                     }
 
                     // Получите kubeconfig для вашего кластера
                     sh """
-                        ~/yandex-cloud/bin/yc  managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external
+                        yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external
                     """
                 }
             }
         }
 
-        stage('Deploy Nginx') {
+
+        stage('Deploy Nginx with Helm') {
             steps {
                 script {
-                    // Примените манифесты Kubernetes для развертывания Nginx
+                    // Разверните Nginx с помощью Helm
                     sh """
-                        kubectl apply -f ${MANIFESTS_PATH}/nginx-deployment.yaml -n ${NAMESPACE}
-                        kubectl apply -f ${MANIFESTS_PATH}/nginx-service.yaml -n ${NAMESPACE}
+                        helm upgrade --install ${HELM_RELEASE_NAME} ${HELM_CHART_PATH} \
+                            --namespace ${NAMESPACE} \
+                            --create-namespace \
+                            --set replicaCount=2 \
+                            --set service.type=LoadBalancer
                     """
                 }
             }
@@ -54,8 +60,8 @@ pipeline {
                 script {
                     // Проверьте статус развертывания
                     sh """
-                        kubectl get pods -n ${NAMESPACE} -l app=nginx
-                        kubectl get svc -n ${NAMESPACE} -l app=nginx
+                        kubectl get pods -n ${NAMESPACE} -l app.kubernetes.io/name=nginx
+                        kubectl get svc -n ${NAMESPACE} -l app.kubernetes.io/name=nginx
                     """
                 }
             }
@@ -64,10 +70,10 @@ pipeline {
 
     post {
         success {
-            echo 'Nginx успешно развернут в Yandex Managed Kubernetes!'
+            echo 'Nginx успешно развернут с помощью Helm в Yandex Managed Kubernetes!'
         }
         failure {
-            echo 'Ошибка при развертывании Nginx в Yandex Managed Kubernetes.'
+            echo 'Ошибка при развертывании Nginx с помощью Helm.'
         }
     }
 }
