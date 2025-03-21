@@ -33,7 +33,7 @@ pipeline {
 
                     // Получите kubeconfig для вашего кластера
                     sh """
-                        ~/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external
+                        ~/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external --force
                     """
                 }
             }
