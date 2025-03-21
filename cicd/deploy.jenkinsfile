@@ -16,7 +16,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Клонируйте репозиторий с Helm-чартом
-                git branch: 'main', url: 'https://github.com/your_repo/nginx-helm-chart.git'
+                git branch: 'main', url: 'https://github.com/kadyrov2/project.git'
             }
         }
 
