@@ -1,97 +1,62 @@
 {{/*
-Copyright Broadcom, Inc. All Rights Reserved.
-SPDX-License-Identifier: APACHE-2.0
+Expand the name of the chart.
 */}}
-
-{{/* vim: set filetype=mustache: */}}
-
-{{/*
-Return the proper ASP.NET Core image name
-*/}}
-{{- define "aspnet-core.image" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.image "global" .Values.global) }}
-{{- end -}}
+{{- define "nginx.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{/*
-Return the proper GIT image name
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
 */}}
-{{- define "aspnet-core.git.image" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.appFromExternalRepo.clone.image "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper .NET SDK image name
-*/}}
-{{- define "aspnet-core.sdk.image" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.appFromExternalRepo.publish.image "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Return the proper Docker Image Registry Secret Names
-*/}}
-{{- define "aspnet-core.imagePullSecrets" -}}
-{{ include "common.images.pullSecrets" (dict "images" (list .Values.image .Values.appFromExternalRepo.clone.image .Values.appFromExternalRepo.publish.image) "global" .Values.global) }}
-{{- end -}}
-
-{{/*
-Create the name of the Service Account to use
-*/}}
-{{- define "aspnet-core.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-    {{- default (include "common.names.fullname" .) .Values.serviceAccount.name }}
+{{- define "nginx.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-    {{- default "default" .Values.serviceAccount.name }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
 {{- end }}
 {{- end }}
 
 {{/*
-Compile all warnings into a single message, and call fail.
+Create chart name and version as used by the chart label.
 */}}
-{{- define "aspnet-core.validateValues" -}}
-{{- $messages := list -}}
-{{- $messages := append $messages (include "aspnet-core.validateValues.customApp" .) -}}
-{{- $messages := append $messages (include "aspnet-core.validateValues.appFromExistingPVC" .) -}}
-{{- $messages := append $messages (include "aspnet-core.validateValues.extraVolumes" .) -}}
-{{- $messages := without $messages "" -}}
-{{- $message := join "\n" $messages -}}
+{{- define "nginx.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
-{{- if $message -}}
-{{-   printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
-{{- end -}}
-{{- end -}}
+{{/*
+Common labels
+*/}}
+{{- define "nginx.labels" -}}
+helm.sh/chart: {{ include "nginx.chart" . }}
+{{ include "nginx.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
 
-{{/* Validate values of ASP.NET Core - Methods to mount custom app */}}
-{{- define "aspnet-core.validateValues.customApp" -}}
-{{- if and .Values.appFromExternalRepo.enabled .Values.appFromExistingPVC.enabled -}}
-aspnet-core: custom app
-    You cannot download your custom ASP.NET Core app from a GitHub repo
-    and mount it from an existing PVC at the same time. Please use one
-    method or the other:
+{{/*
+Selector labels
+*/}}
+{{- define "nginx.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "nginx.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
 
-        appFromExternalRepo.enabled=true
-        appFromExistingPVC.enabled=false
-
-    or:
-
-        appFromExternalRepo.enabled=false
-        appFromExistingPVC.enabled=true
-{{- end -}}
-{{- end -}}
-
-{{/* Validate values of ASP.NET Core - Mounte app from existing PVC */}}
-{{- define "aspnet-core.validateValues.appFromExistingPVC" -}}
-{{- if and .Values.appFromExistingPVC.enabled (empty .Values.appFromExistingPVC.existingClaim) -}}
-aspnet-core: appFromExistingPVC
-    You enabled mounting your custom ASP.NET Core app from an existing PVC,
-    but you didn't set the appFromExistingPVC.existingClaim parameter.
-{{- end -}}
-{{- end -}}
-
-{{/* Validate values of ASP.NET Core - Incorrect extra volume settings */}}
-{{- define "aspnet-core.validateValues.extraVolumes" -}}
-{{- if and .Values.extraVolumes (not (or .Values.extraVolumeMounts .Values.appFromExternalRepo.clone.extraVolumeMounts)) -}}
-aspnet-core: missing-extra-volume-mounts
-    You specified extra volumes but not mount points for them.
-    Please also set the extraVolumeMounts parameter.
-{{- end -}}
-{{- end -}}
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "nginx.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "nginx.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
