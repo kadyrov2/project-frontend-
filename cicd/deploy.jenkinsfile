@@ -10,6 +10,8 @@ pipeline {
         HELM_RELEASE_NAME = 'nginx'
         // Укажите путь к Helm-чарту (например, в вашем репозитории)
         HELM_CHART_PATH = './cicd/helm/'
+
+        
     }
 
     parameters {
@@ -39,13 +41,11 @@ pipeline {
             }
         }
 
-        stage('login Yandex Container Registry') {
+       stage('login Yandex Container Registry') {
             steps {
                 script {
-                    // Создаем IAM-токен
-                    sh """
-                        export IAM_TOKEN=`yc iam create-token`
-                    """
+                    // Создаем IAM-токен и сохраняем его в переменную IAM_TOKEN
+                    IAM_TOKEN = sh(script: 'yc iam create-token', returnStdout: true).trim()
 
                     // Логинимся в Yandex Container Registry
                     sh """
