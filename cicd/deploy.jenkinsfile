@@ -69,18 +69,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Verify Deployment') {
-            steps {
-                script {
-                    // Проверьте статус развертывания
-                    sh """
-                        kubectl get pods -n ${NAMESPACE} -l app.kubernetes.io/name=nginx
-                        kubectl get svc -n ${NAMESPACE} -l app.kubernetes.io/name=nginx
-                    """
-                }
-            }
-        }
     }
 
     post {
