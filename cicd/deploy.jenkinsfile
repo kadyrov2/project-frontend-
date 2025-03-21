@@ -24,6 +24,7 @@ pipeline {
                     // Аутентификация в Yandex Cloud
                     withCredentials([file(credentialsId: 'yandex-cloud-sa-key', variable: 'SA_KEY_FILE')]) {
                         sh """
+                            echo ${SA_KEY_FILE}
                             yc config set service-account-key ${SA_KEY_FILE}
                         """
                     }
