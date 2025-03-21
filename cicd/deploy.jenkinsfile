@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     // Создаем IAM-токен и сохраняем его в переменную IAM_TOKEN
-                    IAM_TOKEN = sh(script: 'yc iam create-token', returnStdout: true).trim()
+                    IAM_TOKEN = sh(script: ' ~/yandex-cloud/bin/yc iam create-token', returnStdout: true).trim()
 
                     // Логинимся в Yandex Container Registry
                     sh """
