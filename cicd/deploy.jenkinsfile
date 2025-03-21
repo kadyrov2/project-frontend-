@@ -39,6 +39,23 @@ pipeline {
             }
         }
 
+        stage('login Yandex Container Registry') {
+            steps {
+                script {
+                    // Создаем IAM-токен
+                    sh """
+                        export IAM_TOKEN=`yc iam create-token`
+                    """
+
+                    // Логинимся в Yandex Container Registry
+                    sh """
+                        sudo docker login cr.yandex \
+                            --username iam \
+                            --password ${IAM_TOKEN}
+                    """
+                }
+            }
+        }
 
         stage('Deploy Nginx with Helm') {
               when {
