@@ -27,13 +27,13 @@ pipeline {
                     // Аутентификация в Yandex Cloud
                     withCredentials([file(credentialsId: 'yandex-cloud-sa-key', variable: 'SA_KEY_FILE')]) {
                         sh """
-                            yc config set service-account-key ${SA_KEY_FILE}
+                            ~/yandex-cloud/bin/yc config set service-account-key ${SA_KEY_FILE}
                         """
                     }
 
                     // Получите kubeconfig для вашего кластера
                     sh """
-                        yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external
+                        ~/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external
                     """
                 }
             }
