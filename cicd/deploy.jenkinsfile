@@ -2,49 +2,39 @@ pipeline {
     agent any
 
     environment {
-        // Укажите переменные окружения, если необходимо
-        DEPLOY_USER = 'your-deploy-user'
-        DEPLOY_HOST = 'your-deploy-host'
-        DEPLOY_PATH = '/path/to/deploy'
-        SSH_KEY = credentials('your-ssh-key-id') // ID вашего SSH ключа в Jenkins
+        // Укажите IP-адрес вашей виртуальной машины в Yandex Cloud
+        SERVER_IP = 'your_vm_ip'
+        // Укажите пользователя для подключения по SSH (обычно это 'yc-user' или 'ubuntu')
+        SSH_USER = 'yc-user'
+        // Укажите путь к приватному SSH-ключу для доступа к виртуальной машине
+        SSH_KEY = 'path_to_your_private_key'
+        // Укажите путь к конфигурации Nginx в вашем репозитории
+        NGINX_CONFIG_PATH = 'nginx_config/'
     }
 
     stages {
-        stage('Сборка') {
+        stage('Checkout') {
             steps {
-                echo 'Сборка приложения...'
-                // Здесь могут быть команды для сборки вашего приложения
-                sh 'mvn clean package' // Пример для Maven проекта
+                // Клонируйте репозиторий с конфигурацией Nginx
+                git branch: 'main', url: 'https://github.com/your_repo/nginx_config.git'
             }
         }
 
-        stage('Тестирование') {
+        stage('Deploy Nginx') {
             steps {
-                echo 'Запуск тестов...'
-                // Здесь могут быть команды для запуска тестов
-                sh 'mvn test' // Пример для Maven проекта
-            }
-        }
-
-        stage('Деплой') {
-            steps {
-                echo 'Деплой приложения...'
                 script {
-                    // Копируем собранный артефакт на сервер
-                    sshagent([SSH_KEY]) {
-                        sh "scp -o StrictHostKeyChecking=no target/your-app.jar ${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/your-app.jar"
-                    }
+                    // Копируем конфигурацию Nginx на виртуальную машину в Yandex Cloud
+                    sh """
+                        scp -o StrictHostKeyChecking=no -i ${SSH_KEY} -r ${NGINX_CONFIG_PATH} ${SSH_USER}@${SERVER_IP}:/tmp/nginx_config/
+                    """
 
-                    // Останавливаем старую версию приложения и запускаем новую
-                    sshagent([SSH_KEY]) {
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_HOST} '
-                                cd ${DEPLOY_PATH}
-                                ./stop-app.sh
-                                ./start-app.sh
-                            '
-                        """
-                    }
+                    // Подключаемся к виртуальной машине и перемещаем конфигурацию в /etc/nginx/
+                    sh """
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${SSH_USER}@${SERVER_IP} '
+                            sudo mv /tmp/nginx_config/* /etc/nginx/ &&
+                            sudo systemctl restart nginx
+                        '
+                    """
                 }
             }
         }
@@ -52,10 +42,10 @@ pipeline {
 
     post {
         success {
-            echo 'Пайплайн успешно завершен!'
+            echo 'Nginx успешно развернут на Yandex Cloud!'
         }
         failure {
-            echo 'Пайплайн завершился с ошибкой.'
+            echo 'Ошибка при развертывании Nginx на Yandex Cloud.'
         }
     }
 }
