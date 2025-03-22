@@ -5,9 +5,9 @@ image:
   pullPolicy: IfNotPresent
   tag: 55
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+imagePullSecrets: 
+  - name: registry-credentials
+
 
 serviceAccount:
   create: true
