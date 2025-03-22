@@ -6,7 +6,7 @@ pipeline {
         NAMESPACE = 'default'
         HELM_RELEASE_NAME = 'nginx'
         HELM_CHART_PATH = './cicd/helm/'
-
+        SA_NAME = 'container-registry-sa' 
     }
 
     parameters {
