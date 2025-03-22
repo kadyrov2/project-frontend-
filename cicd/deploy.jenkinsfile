@@ -35,7 +35,7 @@ pipeline {
             }
         }
 
-       stage('login Yandex Container Registry') {
+        stage('login Yandex Container Registry') {
             steps {
                 script {
 
@@ -50,7 +50,28 @@ pipeline {
             }
         }
 
-        stage('Deploy Nginx with Helm') {
+        stage('Create JSON Key') {
+            steps {
+                script {
+                    // Создаем JSON-ключ для сервисного аккаунта
+                    sh """
+                        ~/yandex-cloud/bin/yc iam key create --service-account-name ${SA_NAME} --output key.json
+                    """
+
+                    // Аутентифицируемся в Yandex Container Registry с помощью JSON-ключа
+                    sh """
+                        cat key.json | docker login --username json_key --password-stdin cr.yandex
+                    """
+
+                    // Удаляем JSON-ключ после использования (опционально, для безопасности)
+                    sh """
+                        rm -f key.json
+                    """
+                }
+            }
+        }
+
+        stage('Deploy') {
               when {
                 expression { params.DELETE_DEPLOY == false }
             }

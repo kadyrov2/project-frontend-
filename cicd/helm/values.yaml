@@ -26,6 +26,12 @@ service:
   type: ClusterIP
   port: 80
 
+docker:
+  server: cr.yandex
+  username: <service-account-id>
+  password: <service-account-key>
+  email: <your-email>
+
 ingress:
   enabled: false
   className: ""
