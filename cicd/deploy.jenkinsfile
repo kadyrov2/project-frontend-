@@ -29,7 +29,7 @@ pipeline {
                         """
                     }
                     sh """
-                        ~/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external --force
+                        ~/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials  --id catq1u4daqo6rqsdpkg0  --external --force
                     """
                 }
             }
