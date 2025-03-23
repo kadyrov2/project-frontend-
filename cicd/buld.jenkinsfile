@@ -4,83 +4,50 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'cr.yandex/crppq9qttclm6v54ocop'
         FRONTEND_DIR = 'frontend' // Путь к проекту фронтенда
-        BACKEND_DIR = 'backend'   // Путь к проекту бэкенда
         CLUSTER_NAME = 'tim-cluster'
         PUBLISH_OUTPUT_DIR = 'publish' // Папка для опубликованных файлов
-        DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY}/frontend-app:${BUILD_NUMBER}"
-        
+        DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY}/backend-app:${GIT_COMMIT[0..5]}-${BUILD_NUMBER}"
     }
 
     stages {
-            stage('Checkout') {
-                steps {
-                    checkout scm
-                }
+        stage('Checkout') {
+            steps {
+                checkout scm
             }
+        }
 
-            // stage('Build Frontend') {
-            //     steps {
-            //         script {
-            //             echo 'Сборка фронтенда...'
-            //             dir(FRONTEND_DIR) {
-            //                 sh 'dotnet restore'
-            //                 sh 'dotnet build --configuration Release'
-            //             }
-            //         }
-            //     }
-            // }
-
-            stage('Build Backend') {
-                steps {
-                    script {
-                        echo 'Сборка бэкенда...'
-                        dir(BACKEND_DIR) {
-                            // sh 'yes | docker system prune -a' 
-                            sh 'dotnet restore'
-                            sh 'dotnet build  --configuration Release'
-                        }
-                    }
-                }
-            }
-
-   
-
-        // stage('Publish Frontend') {
-        //     steps {
-        //         script {
-        //             echo 'Публикация фронтенда...'
-        //             dir(FRONTEND_DIR) {
-        //                 sh "dotnet publish --configuration Release --output ${PUBLISH_OUTPUT_DIR}/frontend"
-        //             }
-        //         }
-        //     }
-        // }
-
-        stage('Publish Backend') {
+        stage('Build Frontend') {
             steps {
                 script {
-                    echo 'Публикация бэкенда...'
-                    dir(BACKEND_DIR) {
-                        sh "dotnet publish --configuration Release --output ${PUBLISH_OUTPUT_DIR}/backend"
+                    echo 'Сборка фронтенда...'
+                    dir(FRONTEND_DIR) {
+                        sh 'dotnet restore'
+                        sh 'dotnet build --configuration Release'
                     }
                 }
             }
         }
 
+
+        stage('Publish Frontend') {
+            steps {
+                script {
+                    echo 'Публикация фронтенда...'
+                    dir(FRONTEND_DIR) {
+                        sh "dotnet publish --configuration Release --output ${PUBLISH_OUTPUT_DIR}/frontend"
+                    }
+                }
+            }
+        }
+
+
         stage('Build Docker Images') {
             steps {
                 script {
                     echo 'Сборка Docker-образов...'
-                    // // Сборка образа для фронтенда
-                    // dir(FRONTEND_DIR) {
-                    //     sh """
-                    //         docker build -t ${DOCKER_IMAGE_FRONTEND} .
-                    //     """
-                    // }
-                    // Сборка образа для бэкенда
                     dir(BACKEND_DIR) {
                         sh """
-                            docker build -t ${DOCKER_IMAGE_BACKEND} .
+                            docker build -t ${DOCKER_IMAGE_FRONTEND} .
                         """
                     }
                 }
@@ -106,10 +73,7 @@ pipeline {
             steps {
                 script {
                     echo 'Публикация Docker-образов в реестр...'
-                    // sh "   yc container image create --name frontend-app --path ./ --tag 48 "
-                    //  sh "sudo docker push ${DOCKER_IMAGE_FRONTEND}"
-                    // Публикация образа бэкенда
-                     sh "sudo docker push ${DOCKER_IMAGE_BACKEND}"
+                     sh "sudo docker push ${DOCKER_IMAGE_FRONTEND}"
                 }
             }
     
@@ -117,7 +81,7 @@ pipeline {
     }
     post {
         success {
-            // Действия после успешного завершения пайплайна
+                  sh "sudo docker rmi  ${DOCKER_IMAGE_FRONTEND}"
             echo 'Build and deploy completed successfully!'
         }
         failure {
