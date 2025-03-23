@@ -10,9 +10,7 @@ pipeline {
         DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY}/frontend-app:${BUILD_NUMBER}"
 
         DOCKER_IMAGE_BACKEND = "${DOCKER_REGISTRY}/backend-app:${BUILD_NUMBER}"
-
-        YC_OAUTH_TOKEN = 'y0__xCC7vykBhjB3RMg852KmxJg7wFn7smq84JZ46GWZN-qbUbBMA'
-        
+        CLUSTER_NAME = 'tim-cluster'
     }
 
     stages {
@@ -90,7 +88,7 @@ pipeline {
                 }
             }
         }
-        
+
          stage('login Yandex Container Registry') {
             steps {
                 script {
