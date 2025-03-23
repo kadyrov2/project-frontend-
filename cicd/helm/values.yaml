@@ -22,15 +22,17 @@ podSecurityContext: {}
 
 securityContext: {}
 
+docker:
+  server: cr.yandex
+  username: YCAJEHoR92BwWz_s5D0O-SH02
+  password: YCPwvO-UykaxcekmhTNVgTKOU5I8r8T9Ka76eGTy  
+  email: user@example.com   
+
+
 service:
   type: ClusterIP
   port: 80
 
-docker:
-  server: cr.yandex
-  username: <service-account-id>
-  password: <service-account-key>
-  email: <your-email>
 
 ingress:
   enabled: false
