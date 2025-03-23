@@ -90,16 +90,18 @@ pipeline {
                 }
             }
         }
-
-        stage(' Auth Yandex Container Registry') {
+        
+         stage('login Yandex Container Registry') {
             steps {
                 script {
-                    // sh "echo ${YC_OAUTH_TOKEN} | docker login --username oauth --password-stdin cr.yandex"
-                    sh'''
-                  sudo docker login cr.yandex \
-                     --username iam \
-                     --password t1.9euelZqMiYuak86ekpaWl56ViZrMmu3rnpWazJqJnM2bxsuMyZCOypiNjpHl9Pd_PhNB-e8UUyyw3fT3P20QQfnvFFMssM3n9euelZrKmcaWio6Mmpmek82MjJLOj-_8xeuelZrKmcaWio6Mmpmek82MjJLOjw.1fP3LjlLheZnEzfg_MV7c_Zil9j9CQqYnBQUiNBQZdRUHmhbopcaCxGM8HFA3OptyDkG6IlvnzTyuKiDhQ1LDA
-                    '''                  
+                    withCredentials([file(credentialsId: 'yandex-cloud-sa-key', variable: 'SA_KEY_FILE')]) {
+                    sh """
+                        ~/yandex-cloud/bin/yc config set service-account-key ${SA_KEY_FILE}
+                    """
+                    }
+                    sh """
+                        ~/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external --force
+                    """
                 }
             }
         }
