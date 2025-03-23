@@ -20,31 +20,16 @@ pipeline {
             }
         }
 
-        stage('Configure kubectl') {
+         stage('login Yandex Container Registry') {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'yandex-cloud-sa-key', variable: 'SA_KEY_FILE')]) {
-                        sh """
-                            ~/yandex-cloud/bin/yc config set service-account-key ${SA_KEY_FILE}
-                        """
+                    sh """
+                        ~/yandex-cloud/bin/yc config set service-account-key ${SA_KEY_FILE}
+                    """
                     }
                     sh """
                         ~/yandex-cloud/bin/yc managed-kubernetes cluster get-credentials ${CLUSTER_NAME} --external --force
-                    """
-                }
-            }
-        }
-
-        stage('login Yandex Container Registry') {
-            steps {
-                script {
-
-                    IAM_TOKEN = sh(script: ' ~/yandex-cloud/bin/yc iam create-token', returnStdout: true).trim()
-
-                    sh """
-                        sudo docker login cr.yandex \
-                            --username iam \
-                            --password ${IAM_TOKEN}
                     """
                 }
             }
@@ -73,7 +58,6 @@ pipeline {
             }
             steps {
                 script {
-                    // Удалите релиз Helm, если параметр DELETE_DEPLOY равен true
                     sh """
                         helm uninstall ${HELM_RELEASE_NAME} --namespace ${NAMESPACE}
                     """
