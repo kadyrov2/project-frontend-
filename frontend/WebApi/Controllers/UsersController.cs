@@ -9,7 +9,7 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        const string BACKEND_HOST = "http://backend-svc";
+        const string BACKEND_HOST = "http://84.201.181.28";
 
         //UsersContext db;
         //public UsersController(UsersContext context)
