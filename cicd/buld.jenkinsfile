@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     echo 'Сборка Docker-образов...'
-                    dir(BACKEND_DIR) {
+                    dir(FRONTEND_DIR) {
                         sh """
                             docker build -t ${DOCKER_IMAGE_FRONTEND} .
                         """
