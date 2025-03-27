@@ -6,7 +6,7 @@ pipeline {
         FRONTEND_DIR = 'frontend' // Путь к проекту фронтенда
         CLUSTER_NAME = 'tim-cluster'
         PUBLISH_OUTPUT_DIR = 'publish' // Папка для опубликованных файлов
-        DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY}/backend-app:${GIT_COMMIT[0..5]}-${BUILD_NUMBER}"
+        DOCKER_IMAGE_FRONTEND = "${DOCKER_REGISTRY}/frontend-app:${GIT_COMMIT[0..5]}-${BUILD_NUMBER}"
     }
 
     stages {
