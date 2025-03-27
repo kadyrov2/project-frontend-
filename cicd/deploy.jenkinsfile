@@ -45,7 +45,7 @@ pipeline {
                         helm upgrade --install ${HELM_RELEASE_NAME} ${HELM_CHART_PATH} \
                             --namespace ${NAMESPACE} \
                             --create-namespace \
-                            --set replicaCount=2 \
+                            --set replicaCount=1 \
                             --set service.type=LoadBalancer
                     """
                 }
