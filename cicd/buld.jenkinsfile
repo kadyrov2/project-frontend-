@@ -81,7 +81,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                build job: 'Deploy/backend', 
+                build job: 'Deploy/frontend', 
                       parameters: [
                         //   booleanParam(name: 'DELETE_DEPLOY', value: true ),
                           string(name: 'IMAGE_TAG', value: "${GIT_COMMIT[0..5]}-${BUILD_NUMBER}"),

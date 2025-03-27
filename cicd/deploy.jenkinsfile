@@ -11,6 +11,7 @@ pipeline {
 
     parameters {
         booleanParam(name: 'DELETE_DEPLOY', defaultValue: false, description: 'Удалить деплой ?')
+        string(name: 'IMAGE_TAG', defaultValue: '12', description: 'Тег образа для деплоя')
     }
 
     stages {
@@ -46,7 +47,8 @@ pipeline {
                             --namespace ${NAMESPACE} \
                             --create-namespace \
                             --set replicaCount=1 \
-                            --set service.type=LoadBalancer
+                            --set service.type=LoadBalancer \
+                            --set image.tag=${params.IMAGE_TAG}
                     """
                 }
             }
